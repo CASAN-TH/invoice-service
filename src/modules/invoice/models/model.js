@@ -12,7 +12,7 @@ var InvoiceSchema = new Schema({
         type: String
     },
     doc_date: {
-        type: String,
+        type: Date,
         required: 'docdate require'
     },
     contact_name: {
@@ -26,14 +26,14 @@ var InvoiceSchema = new Schema({
         type: String
     },
     order_date: {
-        type: String
+        type: Date
     },
     delivery_date: {
-        type: String,
+        type: Date,
         required: 'delivery_date require'
     },
     items: {
-        type: {
+        type: [{
             item_no: {
                 type: Number,
                 required: 'item_no require'
@@ -63,7 +63,7 @@ var InvoiceSchema = new Schema({
             total_item: {
                 type: Number
             }
-        }
+        }]
     },
     total: {
         type: {
@@ -83,7 +83,7 @@ var InvoiceSchema = new Schema({
                 type: Number
             }
         }
-    
+
     }
     ,
     created: {
@@ -116,5 +116,38 @@ var InvoiceSchema = new Schema({
         }
     }
 });
+
+InvoiceSchema.pre("save", function (next) {
+    const model = mongoose.model("Invoice", InvoiceSchema);
+    let invoice = this;
+
+    invoice.total.total_amount = 0;
+    invoice.total.tax = 0;
+    invoice.items.forEach(function (item) {
+        invoice.total.total_amount += (item.qty * item.unit_price) - item.discount;
+        invoice.total.tax += (item.qty * item.unit_price) * (item.tax / 100);
+    })
+    invoice.total.price_untax = invoice.total.total_amount - invoice.total.discount;
+    invoice.total.total_amount_tax = invoice.total.price_untax + invoice.total.tax;
+    
+    if (invoice.isNew) {
+        model.find({ doc_date: { $gte: new Date(invoice.doc_date.getFullYear(), invoice.doc_date.getMonth(), 1), $lte: new Date(invoice.doc_date.getFullYear(), invoice.doc_date.getMonth() + 1, 1) } }, function (err, res) {
+            if (err) {
+                next(err);
+            }
+            if (res.length === 0) {
+                invoice.doc_no = `${invoice.doc_date.getFullYear()}-${(invoice.doc_date.getMonth() + 1).toString().padStart(2, "0")}-001`
+            } else {
+                const maxno = res.length;
+                invoice.doc_no = `${invoice.doc_date.getFullYear()}-${(invoice.doc_date.getMonth() + 1).toString().padStart(2, "0")}-${(maxno + 1).toString().padStart(3, "0")}`
+            }
+
+            next();
+        })
+
+    } else {
+        next();
+    }
+})
 
 mongoose.model("Invoice", InvoiceSchema);
