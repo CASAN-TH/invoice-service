@@ -12,13 +12,15 @@ var InvoiceSchema = new Schema({
         type: String
     },
     doc_date: {
-        type: String
+        type: String,
+        required: 'docdate require'
     },
     contact_name: {
         type: String
     },
     credit: {
-        type: Number
+        type: Number,
+        required: 'credit require'
     },
     order_no: {
         type: String
@@ -27,24 +29,30 @@ var InvoiceSchema = new Schema({
         type: String
     },
     delivery_date: {
-        type: String
+        type: String,
+        required: 'delivery_date require'
     },
     items: {
         type: {
             item_no: {
-                type: Number
+                type: Number,
+                required: 'item_no require'
             },
             item_name: {
-                type: String
+                type: String,
+                required: 'item_name require'
             },
             unitcount: {
-                type: String
+                type: String,
+                required: 'unitcount require'
             },
             qty: {
-                type: Number
+                type: Number,
+                required: 'qty require'
             },
             unit_price: {
-                type: Number
+                type: Number,
+                required: 'unit_price require'
             },
             discount: {
                 type: Number

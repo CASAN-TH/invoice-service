@@ -35,11 +35,11 @@ describe('Invoice CRUD routes tests', function () {
                 total_item: 5250
             },
             total: {
-                total_amount: 5000,
+                // total_amount: 5000,
                 discount: 0,
-                price_untax: 5000,
-                tax: 250,
-                total_amount_tax: 5250        
+                // price_untax: 5000,
+                // tax: 250,
+                // total_amount_tax: 5250        
             }
         };
         credentials = {
@@ -94,6 +94,7 @@ describe('Invoice CRUD routes tests', function () {
                         assert.equal(resp.status, 200);
                         assert.equal(resp.data.customer_no, mockup.customer_no);
                         assert.equal(resp.data.customer_name, mockup.customer_name);
+                        assert.equal(resp.data.doc_no, mockup.doc_no);
                         assert.equal(resp.data.doc_date, mockup.doc_date);
 
                         assert.equal(resp.data.contact_name, mockup.contact_name);
@@ -112,11 +113,11 @@ describe('Invoice CRUD routes tests', function () {
                         assert.equal(resp.data.items.tax, mockup.items.tax);
                         assert.equal(resp.data.items.total_item, mockup.items.total_item);
 
-                        assert.equal(resp.data.total.total_amount, mockup.total.total_amount);
-                        assert.equal(resp.data.total.discount, mockup.total.discount);
-                        assert.equal(resp.data.total.price_untax, mockup.total.price_untax);
-                        assert.equal(resp.data.total.tax, mockup.total.tax);
-                        assert.equal(resp.data.total.total_amount_tax, mockup.total.total_amount_tax);
+                        assert.equal(resp.data.total.total_amount, 5000);
+                        assert.equal(resp.data.total.discount, 0);
+                        assert.equal(resp.data.total.price_untax, 5000);
+                        assert.equal(resp.data.total.tax, 250);
+                        assert.equal(resp.data.total.total_amount_tax, 5250);
 
 
                         done();
@@ -136,7 +137,31 @@ describe('Invoice CRUD routes tests', function () {
                     return done(err);
                 }
                 var resp = res.body;
-                assert.equal(resp.data.name, mockup.name);
+                assert.equal(resp.data.customer_no, mockup.customer_no);
+                        assert.equal(resp.data.customer_name, mockup.customer_name);
+                        assert.equal(resp.data.doc_date, mockup.doc_date);
+
+                        assert.equal(resp.data.contact_name, mockup.contact_name);
+                        assert.equal(resp.data.credit, mockup.credit);
+                        assert.equal(resp.data.order_no, mockup.order_no);
+
+                        assert.equal(resp.data.order_date, mockup.order_date);
+                        assert.equal(resp.data.delivery_date, mockup.delivery_date);
+
+                        assert.equal(resp.data.items.item_no, mockup.items.item_no);
+                        assert.equal(resp.data.items.item_name, mockup.items.item_name);
+                        assert.equal(resp.data.items.unitcount, mockup.items.unitcount);
+                        assert.equal(resp.data.items.qty, mockup.items.qty);
+                        assert.equal(resp.data.items.unit_price, mockup.items.unit_price);
+                        assert.equal(resp.data.items.discount, mockup.items.discount);
+                        assert.equal(resp.data.items.tax, mockup.items.tax);
+                        assert.equal(resp.data.items.total_item, mockup.items.total_item);
+
+                        assert.equal(resp.data.total.total_amount, 5000);
+                        assert.equal(resp.data.total.discount, 0);
+                        assert.equal(resp.data.total.price_untax, 5000);
+                        assert.equal(resp.data.total.tax, 250);
+                        assert.equal(resp.data.total.total_amount_tax, 5250);
                 done();
             });
     });
@@ -154,7 +179,7 @@ describe('Invoice CRUD routes tests', function () {
                 }
                 var resp = res.body;
                 var update = {
-                    name: 'name update'
+                    order_no: 'po230317-002'
                 }
                 request(app)
                     .put('/api/invoices/' + resp.data._id)
@@ -166,7 +191,7 @@ describe('Invoice CRUD routes tests', function () {
                             return done(err);
                         }
                         var resp = res.body;
-                        assert.equal(resp.data.name, update.name);
+                        assert.equal(resp.data.order_no, update.order_no);
                         done();
                     });
             });
